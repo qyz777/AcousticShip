@@ -32,6 +32,9 @@
 		A07B6A3224134B69008170F5 /* PassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A3124134B69008170F5 /* PassView.swift */; };
 		A07B6A352413538A008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
 		A07B6A3624135698008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
+		A07B6A3824137597008170F5 /* audio2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3724137597008170F5 /* audio2.mp3 */; };
+		A07B6A3924137597008170F5 /* audio2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3724137597008170F5 /* audio2.mp3 */; };
+		A07B6A3C24137931008170F5 /* FailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A3A241378A2008170F5 /* FailedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -176,6 +179,8 @@
 		A07B6A2F24134632008170F5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		A07B6A3124134B69008170F5 /* PassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassView.swift; sourceTree = "<group>"; };
 		A07B6A3424135389008170F5 /* audio1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = audio1.mp3; path = "../../../../../Downloads/包图网_605456拳头击打攻击拳击格斗/audio1.mp3"; sourceTree = "<group>"; };
+		A07B6A3724137597008170F5 /* audio2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = audio2.mp3; path = ../../../../../Downloads/audio2.mp3; sourceTree = "<group>"; };
+		A07B6A3A241378A2008170F5 /* FailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,6 +334,7 @@
 				A07B6A2D240A5A29008170F5 /* TargetView.swift */,
 				A07B6A2F24134632008170F5 /* StartView.swift */,
 				A07B6A3124134B69008170F5 /* PassView.swift */,
+				A07B6A3A241378A2008170F5 /* FailedView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -418,6 +424,7 @@
 			isa = PBXGroup;
 			children = (
 				A07B6A3424135389008170F5 /* audio1.mp3 */,
+				A07B6A3724137597008170F5 /* audio2.mp3 */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -574,6 +581,7 @@
 			files = (
 				5EF2F97C2054B6E400191409 /* ManifestPlist.strings in Resources */,
 				5E551EC52371FC3F00784365 /* Assets.xcassets in Resources */,
+				A07B6A3824137597008170F5 /* audio2.mp3 in Resources */,
 				5E086DCA2051DDAE004D8D25 /* LiveView.storyboard in Resources */,
 				A07B6A352413538A008170F5 /* audio1.mp3 in Resources */,
 			);
@@ -584,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EA2E3CA2056F35B00416A35 /* LiveViewTestAppLaunchScreen.storyboard in Resources */,
+				A07B6A3924137597008170F5 /* audio2.mp3 in Resources */,
 				A07B6A3624135698008170F5 /* audio1.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -645,6 +654,7 @@
 				5EF2F9AE2054BBF300191409 /* LiveViewController.swift in Sources */,
 				A07B6A27240A471F008170F5 /* Extension.swift in Sources */,
 				A07B6A2E240A5A29008170F5 /* TargetView.swift in Sources */,
+				A07B6A3C24137931008170F5 /* FailedView.swift in Sources */,
 				A07B6A3024134632008170F5 /* StartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

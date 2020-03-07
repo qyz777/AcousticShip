@@ -54,6 +54,7 @@ class AudioRecorder {
     public func stop(_ closure: @escaping (_ flag: Bool, _ url: URL) -> Void) {
         delegateHandler.finishClosure = closure
         recorder.stop()
+        recorder.deleteRecording()
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, options: .defaultToSpeaker)
         } catch {

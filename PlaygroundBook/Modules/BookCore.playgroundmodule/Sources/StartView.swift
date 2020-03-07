@@ -49,19 +49,19 @@ class StartView: UIView {
     
     private lazy var startButton: UIButton = {
         let view = UIButton(type: .custom)
-        view.frame = CGRect(x: 0, y: 0, width: 200, height: 40)
-        view.setTitle("Start!", for: .normal)
+        view.frame = CGRect(x: 0, y: 0, width: 200, height: 60)
+        view.setTitle("Start", for: .normal)
         view.setTitleColor(.white, for: .normal)
-        view.titleLabel?.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        view.titleLabel?.font = UIFont.systemFont(ofSize: 60, weight: .semibold)
         view.addTarget(self, action: #selector(start), for: .touchUpInside)
         return view
     }()
     
     private lazy var numberLabel: UILabel = {
-        let view = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 40))
+        let view = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 60))
         view.text = "3"
         view.textColor = .white
-        view.font = UIFont.systemFont(ofSize: 30, weight: .light)
+        view.font = UIFont.systemFont(ofSize: 60, weight: .light)
         view.isHidden = true
         view.textAlignment = .center
         return view
