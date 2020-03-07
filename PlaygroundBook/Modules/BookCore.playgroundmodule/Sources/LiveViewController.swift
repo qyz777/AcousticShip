@@ -8,15 +8,25 @@
 
 import UIKit
 import PlaygroundSupport
+import AudioToolbox
 
 @objc(BookCore_LiveViewController)
 public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHandler, PlaygroundLiveViewSafeAreaContainer {
     
-    var audioRecorder: AudioRecorder?
-    var displayLink: CADisplayLink?
-    var lastCenterX: CGFloat = 0
+    private var audioRecorder: AudioRecorder?
+    private var displayLink: CADisplayLink?
+    private var lastCenterX: CGFloat = 0
+    private var timer: Timer?
     
-    var timer: Timer?
+    public var targets: [String] = ["😈", "😈", "😈", "😈", "😈", "😈", "😈", "😈", "😈", "😈"]
+    
+    public var targetTop: CGFloat = 400
+    
+    public var shootTimeInterval: TimeInterval = 2
+    
+    private var offsetIndex = 0
+    
+    private var audio1: SystemSoundID = 0
     
     /*
     public func liveViewMessageConnectionOpened() {
@@ -47,51 +57,61 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
         view.addGestureRecognizer(pan)
         
+        setupAudio()
+        
         do {
             try audioRecorder = AudioRecorder()
         } catch {
             print(error)
         }
+        
         displayLink?.invalidate()
         displayLink = CADisplayLink(target: self, selector: #selector(setupRecorderLevel))
         displayLink?.add(to: RunLoop.current, forMode: .common)
         audioRecorder?.record()
-        play()
+        
+        showStartView()
     }
     
-    //MARK: Private
+    //MARK: Public
     
-    private func play() {
-        let height: CGFloat = 100
-        var paths: [CGFloat] = []
-        var offsetY: CGFloat = 225
-        for i in 0..<4 {
-            if i == 0 {
-                paths.append(offsetY)
-            } else {
-                offsetY += height
-                paths.append(offsetY)
-            }
+    public func play() {
+        guard targets.count > 0 else {
+            return
         }
-        timer = Timer(timeInterval: 1, repeats: true, block: { [unowned self] (t) in
-            let value = Int.randomIntNumber(lower: 0, upper: 4)
-            let centerY = paths[value]
-            let targetView = TargetView(frame: CGRect(x: 0, y: 0, width: height, height: height))
-            targetView.center.y = centerY
-            targetView.x = -height
-            self.view.addSubview(targetView)
-            self.addAnimation(targetView)
+        shootTarget()
+        timer = Timer(timeInterval: shootTimeInterval, repeats: true, block: { [unowned self] (t) in
+            guard self.offsetIndex < self.targets.count else {
+                self.stop()
+                return
+            }
+            self.shootTarget()
         })
         RunLoop.current.add(timer!, forMode: .common)
     }
     
+    //MARK: Private
+    
     private func stop() {
+        offsetIndex = 0
         timer?.invalidate()
-        view.subviews.forEach {
-            if $0.isKind(of: TargetView.self) {
-                $0.removeFromSuperview()
-            }
-        }
+    }
+    
+    private func setupAudio() {
+        let path1 = Bundle.main.path(forResource: "audio1", ofType: "mp3")
+        let url1 = NSURL(fileURLWithPath: path1 ?? "")
+        AudioServicesCreateSystemSoundID(url1, &audio1)
+    }
+    
+    private func shootTarget() {
+        let size: CGFloat = 100
+        let targetView = TargetView(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        targetView.label.text = self.targets[self.offsetIndex]
+        targetView.y = self.targetTop
+        targetView.x = -size
+        view.addSubview(targetView)
+        addAnimation(targetView)
+        offsetIndex += 1
     }
     
     private func addAnimation(_ view: UIView) {
@@ -105,6 +125,21 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         animation.fillMode = .forwards
         animation.delegate = self
         view.layer.add(animation, forKey: "path_animation")
+    }
+    
+    private func showStartView() {
+        let startView = StartView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        startView.completeClosure = { [unowned self] in
+            self.play()
+        }
+        startView.center = view.center
+        view.addSubview(startView)
+    }
+    
+    private func showPassView() {
+        let passView = PassView(frame: CGRect(x: 0, y: 0, width: 400, height: 200))
+        passView.center = view.center
+        view.addSubview(passView)
     }
     
     //MARK: Action
@@ -130,6 +165,17 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         let level = CGFloat(normalizedValue)
         testLabel.text = String(format: "%.10f", level)
         flexibleView.level = level
+        
+        view.subviews.forEach {
+            if $0.isKind(of: TargetView.self) {
+                guard let layer = $0.layer.presentation() else { return }
+                let rect = CGRect(x: flexibleView.center.x - 30, y: flexibleView.y, width: 60, height: 60)
+                if layer.frame.intersects(rect) {
+                    AudioServicesPlaySystemSound(audio1)
+                    $0.removeFromSuperview()
+                }
+            }
+        }
     }
     
     //MARK: Getter
@@ -141,7 +187,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     }()
     
     lazy var flexibleView: FlexibleAttackView = {
-        let view = FlexibleAttackView(frame: CGRect(x: 0, y: self.view.height - 110, width: 20, height: 110))
+        let view = FlexibleAttackView(frame: CGRect(x: 0, y: self.view.height - 110, width: 90, height: 110))
         view.center.x = self.view.center.x
         return view
     }()

@@ -8,22 +8,13 @@
 import UIKit
 
 enum TargetType {
-    case angel
-    case demon
+    case normal
+    case failed
 }
 
 class TargetView: UIView {
     
-    var type: TargetType = .diamond {
-        willSet {
-            switch newValue {
-            case .angel:
-                label.text = "👼"
-            case .demon:
-                label.text = "😈"
-            }
-        }
-    }
+    var type: TargetType = .normal
     
     override init(frame: CGRect) {
         super.init(frame: frame)

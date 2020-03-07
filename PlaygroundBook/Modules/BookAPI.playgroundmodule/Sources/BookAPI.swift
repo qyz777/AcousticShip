@@ -7,6 +7,8 @@
 //
 
 import BookCore
+import UIKit
+import PlaygroundSupport
 
 // Implement any classes/structs/enums/functions in the BookAPI module which you
 // want to be automatically imported and visible for users on playground pages
@@ -14,3 +16,22 @@ import BookCore
 //
 // This is controlled via the book-level `UserAutoImportedAuxiliaryModules`
 // Manifest.plist key.
+
+let vc = LiveViewController()
+
+public func playGame() {
+    vc.play()
+    PlaygroundPage.current.liveView = vc
+}
+
+public func setupTargets(_ targets: [String]) {
+    vc.targets = targets
+}
+
+public func setupTargetTop(_ top: CGFloat) {
+    vc.targetTop = top
+}
+
+public func setupTimeInterval(_ time: TimeInterval) {
+    vc.shootTimeInterval = time
+}

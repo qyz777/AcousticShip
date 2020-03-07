@@ -28,6 +28,10 @@
 		A07B6A27240A471F008170F5 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A26240A471F008170F5 /* Extension.swift */; };
 		A07B6A2A240A4CB5008170F5 /* FlexibleAttackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */; };
 		A07B6A2E240A5A29008170F5 /* TargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A2D240A5A29008170F5 /* TargetView.swift */; };
+		A07B6A3024134632008170F5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A2F24134632008170F5 /* StartView.swift */; };
+		A07B6A3224134B69008170F5 /* PassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A3124134B69008170F5 /* PassView.swift */; };
+		A07B6A352413538A008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
+		A07B6A3624135698008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -169,6 +173,9 @@
 		A07B6A26240A471F008170F5 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleAttackView.swift; sourceTree = "<group>"; };
 		A07B6A2D240A5A29008170F5 /* TargetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetView.swift; sourceTree = "<group>"; };
+		A07B6A2F24134632008170F5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		A07B6A3124134B69008170F5 /* PassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassView.swift; sourceTree = "<group>"; };
+		A07B6A3424135389008170F5 /* audio1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = audio1.mp3; path = "../../../../../Downloads/包图网_605456拳头击打攻击拳击格斗/audio1.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,6 +327,8 @@
 				A07B6A26240A471F008170F5 /* Extension.swift */,
 				A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */,
 				A07B6A2D240A5A29008170F5 /* TargetView.swift */,
+				A07B6A2F24134632008170F5 /* StartView.swift */,
+				A07B6A3124134B69008170F5 /* PassView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -388,6 +397,7 @@
 		5EF2F9792054B64800191409 /* PrivateResources */ = {
 			isa = PBXGroup;
 			children = (
+				A07B6A3324135372008170F5 /* Audio */,
 				5EF2F97E2054B6E400191409 /* ManifestPlist.strings */,
 				5E086DCC2051DDAE004D8D25 /* LiveView.storyboard */,
 				5E551EC42371FC3F00784365 /* Assets.xcassets */,
@@ -402,6 +412,14 @@
 				5E6F7E582367B51E008CC191 /* UserModules */,
 			);
 			name = "Supporting Content";
+			sourceTree = "<group>";
+		};
+		A07B6A3324135372008170F5 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				A07B6A3424135389008170F5 /* audio1.mp3 */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -557,6 +575,7 @@
 				5EF2F97C2054B6E400191409 /* ManifestPlist.strings in Resources */,
 				5E551EC52371FC3F00784365 /* Assets.xcassets in Resources */,
 				5E086DCA2051DDAE004D8D25 /* LiveView.storyboard in Resources */,
+				A07B6A352413538A008170F5 /* audio1.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,6 +584,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EA2E3CA2056F35B00416A35 /* LiveViewTestAppLaunchScreen.storyboard in Resources */,
+				A07B6A3624135698008170F5 /* audio1.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -621,9 +641,11 @@
 				A07B6A25240A46F8008170F5 /* AudioRecorder.swift in Sources */,
 				A07B6A2A240A4CB5008170F5 /* FlexibleAttackView.swift in Sources */,
 				5E3196F32061DEA40077BBD7 /* LiveViewSupport.swift in Sources */,
+				A07B6A3224134B69008170F5 /* PassView.swift in Sources */,
 				5EF2F9AE2054BBF300191409 /* LiveViewController.swift in Sources */,
 				A07B6A27240A471F008170F5 /* Extension.swift in Sources */,
 				A07B6A2E240A5A29008170F5 /* TargetView.swift in Sources */,
+				A07B6A3024134632008170F5 /* StartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
