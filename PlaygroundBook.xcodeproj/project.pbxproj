@@ -24,17 +24,13 @@
 		5EF2F97C2054B6E400191409 /* ManifestPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5EF2F97E2054B6E400191409 /* ManifestPlist.strings */; };
 		5EF2F9AE2054BBF300191409 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF2F9AD2054BBF300191409 /* LiveViewController.swift */; };
 		5EF2F9B72054E6FB00191409 /* Chapters in Copy Book Contents */ = {isa = PBXBuildFile; fileRef = 5EF2F9B62054E6F900191409 /* Chapters */; };
-		A07B6A25240A46F8008170F5 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A24240A46F8008170F5 /* AudioRecorder.swift */; };
-		A07B6A27240A471F008170F5 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A26240A471F008170F5 /* Extension.swift */; };
-		A07B6A2A240A4CB5008170F5 /* FlexibleAttackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */; };
-		A07B6A2E240A5A29008170F5 /* TargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A2D240A5A29008170F5 /* TargetView.swift */; };
-		A07B6A3024134632008170F5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A2F24134632008170F5 /* StartView.swift */; };
-		A07B6A3224134B69008170F5 /* PassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A3124134B69008170F5 /* PassView.swift */; };
-		A07B6A352413538A008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
-		A07B6A3624135698008170F5 /* audio1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3424135389008170F5 /* audio1.mp3 */; };
-		A07B6A3824137597008170F5 /* audio2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3724137597008170F5 /* audio2.mp3 */; };
-		A07B6A3924137597008170F5 /* audio2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A07B6A3724137597008170F5 /* audio2.mp3 */; };
-		A07B6A3C24137931008170F5 /* FailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07B6A3A241378A2008170F5 /* FailedView.swift */; };
+		A0D3872B246312F900C6D617 /* FailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38727246312F800C6D617 /* FailedView.swift */; };
+		A0D3872C246312F900C6D617 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38728246312F800C6D617 /* AudioRecorder.swift */; };
+		A0D3872D246312F900C6D617 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38729246312F800C6D617 /* Extension.swift */; };
+		A0D3872E246312F900C6D617 /* FlexibleAttackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D3872A246312F900C6D617 /* FlexibleAttackView.swift */; };
+		A0D387322463130000C6D617 /* TargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D3872F246312FF00C6D617 /* TargetView.swift */; };
+		A0D387332463130000C6D617 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38730246312FF00C6D617 /* StartView.swift */; };
+		A0D387342463130000C6D617 /* PassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38731246312FF00C6D617 /* PassView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -172,15 +168,13 @@
 		5EF2F9AB2054BBF300191409 /* libBookCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBookCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EF2F9AD2054BBF300191409 /* LiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
 		5EF2F9B62054E6F900191409 /* Chapters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Chapters; sourceTree = "<group>"; };
-		A07B6A24240A46F8008170F5 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
-		A07B6A26240A471F008170F5 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
-		A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleAttackView.swift; sourceTree = "<group>"; };
-		A07B6A2D240A5A29008170F5 /* TargetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetView.swift; sourceTree = "<group>"; };
-		A07B6A2F24134632008170F5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
-		A07B6A3124134B69008170F5 /* PassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassView.swift; sourceTree = "<group>"; };
-		A07B6A3424135389008170F5 /* audio1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = audio1.mp3; path = "../../../../../Downloads/包图网_605456拳头击打攻击拳击格斗/audio1.mp3"; sourceTree = "<group>"; };
-		A07B6A3724137597008170F5 /* audio2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = audio2.mp3; path = ../../../../../Downloads/audio2.mp3; sourceTree = "<group>"; };
-		A07B6A3A241378A2008170F5 /* FailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedView.swift; sourceTree = "<group>"; };
+		A0D38727246312F800C6D617 /* FailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedView.swift; sourceTree = "<group>"; };
+		A0D38728246312F800C6D617 /* AudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		A0D38729246312F800C6D617 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		A0D3872A246312F900C6D617 /* FlexibleAttackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexibleAttackView.swift; sourceTree = "<group>"; };
+		A0D3872F246312FF00C6D617 /* TargetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetView.swift; sourceTree = "<group>"; };
+		A0D38730246312FF00C6D617 /* StartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		A0D38731246312FF00C6D617 /* PassView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,15 +320,15 @@
 		5E70679D23678DA00094BDEF /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A0D38731246312FF00C6D617 /* PassView.swift */,
+				A0D38730246312FF00C6D617 /* StartView.swift */,
+				A0D3872F246312FF00C6D617 /* TargetView.swift */,
 				5EF2F9AD2054BBF300191409 /* LiveViewController.swift */,
 				5E3196F22061DEA40077BBD7 /* LiveViewSupport.swift */,
-				A07B6A24240A46F8008170F5 /* AudioRecorder.swift */,
-				A07B6A26240A471F008170F5 /* Extension.swift */,
-				A07B6A29240A4CB5008170F5 /* FlexibleAttackView.swift */,
-				A07B6A2D240A5A29008170F5 /* TargetView.swift */,
-				A07B6A2F24134632008170F5 /* StartView.swift */,
-				A07B6A3124134B69008170F5 /* PassView.swift */,
-				A07B6A3A241378A2008170F5 /* FailedView.swift */,
+				A0D38728246312F800C6D617 /* AudioRecorder.swift */,
+				A0D38729246312F800C6D617 /* Extension.swift */,
+				A0D38727246312F800C6D617 /* FailedView.swift */,
+				A0D3872A246312F900C6D617 /* FlexibleAttackView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -403,7 +397,6 @@
 		5EF2F9792054B64800191409 /* PrivateResources */ = {
 			isa = PBXGroup;
 			children = (
-				A07B6A3324135372008170F5 /* Audio */,
 				5EF2F97E2054B6E400191409 /* ManifestPlist.strings */,
 				5E086DCC2051DDAE004D8D25 /* LiveView.storyboard */,
 				5E551EC42371FC3F00784365 /* Assets.xcassets */,
@@ -418,15 +411,6 @@
 				5E6F7E582367B51E008CC191 /* UserModules */,
 			);
 			name = "Supporting Content";
-			sourceTree = "<group>";
-		};
-		A07B6A3324135372008170F5 /* Audio */ = {
-			isa = PBXGroup;
-			children = (
-				A07B6A3424135389008170F5 /* audio1.mp3 */,
-				A07B6A3724137597008170F5 /* audio2.mp3 */,
-			);
-			path = Audio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -581,9 +565,7 @@
 			files = (
 				5EF2F97C2054B6E400191409 /* ManifestPlist.strings in Resources */,
 				5E551EC52371FC3F00784365 /* Assets.xcassets in Resources */,
-				A07B6A3824137597008170F5 /* audio2.mp3 in Resources */,
 				5E086DCA2051DDAE004D8D25 /* LiveView.storyboard in Resources */,
-				A07B6A352413538A008170F5 /* audio1.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,8 +574,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EA2E3CA2056F35B00416A35 /* LiveViewTestAppLaunchScreen.storyboard in Resources */,
-				A07B6A3924137597008170F5 /* audio2.mp3 in Resources */,
-				A07B6A3624135698008170F5 /* audio1.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,15 +627,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A07B6A25240A46F8008170F5 /* AudioRecorder.swift in Sources */,
-				A07B6A2A240A4CB5008170F5 /* FlexibleAttackView.swift in Sources */,
+				A0D3872D246312F900C6D617 /* Extension.swift in Sources */,
 				5E3196F32061DEA40077BBD7 /* LiveViewSupport.swift in Sources */,
-				A07B6A3224134B69008170F5 /* PassView.swift in Sources */,
+				A0D3872B246312F900C6D617 /* FailedView.swift in Sources */,
+				A0D387332463130000C6D617 /* StartView.swift in Sources */,
+				A0D3872C246312F900C6D617 /* AudioRecorder.swift in Sources */,
 				5EF2F9AE2054BBF300191409 /* LiveViewController.swift in Sources */,
-				A07B6A27240A471F008170F5 /* Extension.swift in Sources */,
-				A07B6A2E240A5A29008170F5 /* TargetView.swift in Sources */,
-				A07B6A3C24137931008170F5 /* FailedView.swift in Sources */,
-				A07B6A3024134632008170F5 /* StartView.swift in Sources */,
+				A0D3872E246312F900C6D617 /* FlexibleAttackView.swift in Sources */,
+				A0D387342463130000C6D617 /* PassView.swift in Sources */,
+				A0D387322463130000C6D617 /* TargetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -811,7 +791,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -866,7 +846,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
