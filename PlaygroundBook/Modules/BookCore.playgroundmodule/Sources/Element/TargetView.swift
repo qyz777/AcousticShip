@@ -7,14 +7,9 @@
 
 import UIKit
 
-enum TargetType {
-    case normal
-    case failed
-}
+let TARGET_SIZE: CGFloat = UIFont.systemFont(ofSize: 50).pointSize + 5
 
 class TargetView: UIView {
-    
-    var type: TargetType = .normal
     
     override init(frame: CGRect) {
         super.init(frame: frame)

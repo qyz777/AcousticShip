@@ -15,56 +15,77 @@ public enum HitSoundType {
     case bang
 }
 
+public enum FlyingSpeed: Double {
+    case low = 10
+    case medium = 8
+    case high = 5
+}
+
+public enum GuidedMissileSpeed: Double {
+    case low = 7
+    case medium = 5
+    case high = 3
+}
+
+public enum WarplaneStyle: String {
+    case science = "warplane_1"
+    case modern = "warplane_2"
+}
+
+let X_PADDING: CGFloat = 50
+let Y_PADDING: CGFloat = 100
+let WARPLANE_SIZE: CGFloat = 90
+
 @objc(BookCore_LiveViewController)
 public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHandler, PlaygroundLiveViewSafeAreaContainer {
     
     private var audioRecorder: AudioRecorder?
     private var displayLink: CADisplayLink?
-    private var lastCenterX: CGFloat = 0
+    private var lastCenter: CGPoint = .zero
     private var timer: Timer?
     
-    public var targets: [String] = ["😈", "😈", "😈", "😈", "😈"]
+    /// 对手数量
+    public var opponentCount = 100
     
-    public var targetTop: CGFloat = 400
+    public var shootTimeInterval: TimeInterval = 0.5
     
-    public var shootTimeInterval: TimeInterval = 2
-    
+    /// 命名音效
     public var hitSoundType: HitSoundType = .puff
     
+    /// target飞行速度
+    public var flyingSpeed: FlyingSpeed = .medium
+    
+    /// 飞机样式
+    public var warplaneStyle: WarplaneStyle = .science
+    
+    /// 导弹速度
+    public var guidedMissileSpeed: GuidedMissileSpeed = .medium
+    
+    /// 生命值
+    public var healthPoint = 5
+    
+    public var shootGuidedMissileInterval: TimeInterval = 0.5
+    
+    /// 记录出现对手的个数
     private var offsetIndex = 0
     
     private var audio1: SystemSoundID = 0
     private var audio2: SystemSoundID = 0
     
-    private var isStop = true
+    private var isPlay = false
     
-    /*
-    public func liveViewMessageConnectionOpened() {
-        // Implement this method to be notified when the live view message connection is opened.
-        // The connection will be opened when the process running Contents.swift starts running and listening for messages.
-    }
-    */
-
-    /*
-    public func liveViewMessageConnectionClosed() {
-        // Implement this method to be notified when the live view message connection is closed.
-        // The connection will be closed when the process running Contents.swift exits and is no longer listening for messages.
-        // This happens when the user's code naturally finishes running, if the user presses Stop, or if there is a crash.
-    }
-    */
-
-    public func receive(_ message: PlaygroundValue) {
-        // Implement this method to receive messages sent from the process running Contents.swift.
-        // This method is *required* by the PlaygroundLiveViewMessageHandler protocol.
-        // Use this method to decode any messages sent as PlaygroundValue values and respond accordingly.
-    }
+    private var targetSet: Set<TargetView> = []
+    private var guidedMissileSet: Set<GuidedMissileView> = []
+    
+    private var callTime: TimeInterval = 0
     
     public override func viewDidLoad() {
         view.backgroundColor = .black
-        view.addSubview(flexibleView)
+        view.addSubview(warplaneView)
         
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
-        view.addGestureRecognizer(pan)
+        warplaneView.frame = CGRect(x: 0, y: 0, width: WARPLANE_SIZE, height: WARPLANE_SIZE)
+        warplaneView.center.x = view.width / 2
+        warplaneView.center.y = view.height - WARPLANE_SIZE
         
         setupAudio()
         
@@ -75,9 +96,9 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         }
         
         displayLink?.invalidate()
-        displayLink = CADisplayLink(target: self, selector: #selector(setupRecorderLevel))
+        displayLink = CADisplayLink(target: self, selector: #selector(handleTimerCall))
+        displayLink?.isPaused = true
         displayLink?.add(to: RunLoop.current, forMode: .common)
-        audioRecorder?.record()
         
         showStartView()
     }
@@ -85,18 +106,21 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     //MARK: Public
     
     public func play() {
-        guard targets.count > 0 else {
+        guard opponentCount > 0 else {
             return
         }
-        isStop = false
-        shootTarget()
+        audioRecorder?.record()
+        displayLink?.isPaused = false
+        shootTarget(at: Int.randomIntNumber(lower: 0, upper: self.totalTargetPath))
         timer = Timer(timeInterval: shootTimeInterval, repeats: true, block: { [unowned self] (t) in
-            guard self.offsetIndex < self.targets.count else {
+            guard self.offsetIndex < self.opponentCount else {
                 return
             }
-            self.shootTarget()
+            
+            self.shootTarget(at: Int.randomIntNumber(lower: 1, upper: self.totalTargetPath + 1))
         })
         RunLoop.current.add(timer!, forMode: .common)
+        isPlay = true
     }
     
     //MARK: Private
@@ -104,6 +128,11 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     private func stop() {
         offsetIndex = 0
         timer?.invalidate()
+        displayLink?.isPaused = true
+        audioRecorder?.stop({ (flah, url) in
+            
+        })
+        isPlay = false
     }
     
     private func setupAudio() {
@@ -115,28 +144,50 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         AudioServicesCreateSystemSoundID(url2, &audio2)
     }
     
-    private func shootTarget() {
-        let size: CGFloat = 100
-        let targetView = TargetView(frame: CGRect(x: 0, y: 0, width: size, height: size))
-        targetView.label.text = self.targets[self.offsetIndex]
-        targetView.y = self.targetTop
-        targetView.x = -size
+    private func shootTarget(at path: Int) {
+        let targetView = TargetView(frame: CGRect(x: 0, y: -TARGET_SIZE, width: TARGET_SIZE, height: TARGET_SIZE))
+        targetView.label.text = "😈"
+        targetView.center.x = X_PADDING + pathPointX * 2 * CGFloat(path - 1) + pathPointX
         view.addSubview(targetView)
-        addAnimation(targetView)
+        addTargetAnimation(targetView)
         offsetIndex += 1
+        targetSet.insert(targetView)
     }
     
-    private func addAnimation(_ view: UIView) {
+    private func shootGuidedMissile() {
+        let guidedMissileView = GuidedMissileView(frame: CGRect(x: 0, y: 0, width: GUIDED_MISSILE_WIDTH, height: GUIDED_MISSILE_HEIGHT))
+        guidedMissileView.center = CGPoint(x: warplaneView.center.x, y: warplaneView.y - GUIDED_MISSILE_HEIGHT / 2 - 5)
+        view.addSubview(guidedMissileView)
+        addGuidedMissileAnimation(guidedMissileView)
+        guidedMissileSet.insert(guidedMissileView)
+    }
+    
+    private func addTargetAnimation(_ view: UIView) {
         let animation = CABasicAnimation(keyPath: "position")
         animation.fromValue = NSValue(cgPoint: view.layer.position)
-        animation.toValue = NSValue(cgPoint: CGPoint(x: view.superview?.width ?? 0 + 50, y: view.layer.position.y))
-        animation.duration = 10
+        animation.toValue = NSValue(cgPoint: CGPoint(x: view.layer.position.x, y: self.view.height + view.height / 2))
+        animation.duration = flyingSpeed.rawValue
         animation.autoreverses = false
         animation.beginTime = CACurrentMediaTime()
         animation.isRemovedOnCompletion = false
         animation.fillMode = .forwards
         animation.delegate = self
-        view.layer.add(animation, forKey: "path_animation")
+        animation.setValue(view, forKey: "view")
+        view.layer.add(animation, forKey: "target_animation")
+    }
+    
+    private func addGuidedMissileAnimation(_ view: UIView) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.fromValue = NSValue(cgPoint: view.layer.position)
+        animation.toValue = NSValue(cgPoint: CGPoint(x: view.layer.position.x, y: -GUIDED_MISSILE_HEIGHT / 2))
+        animation.duration = guidedMissileSpeed.rawValue
+        animation.autoreverses = false
+        animation.beginTime = CACurrentMediaTime()
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = .forwards
+        animation.delegate = self
+        animation.setValue(view, forKey: "view")
+        view.layer.add(animation, forKey: "guided_missile_animation")
     }
     
     private func showStartView() {
@@ -169,87 +220,144 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         }
     }
     
+    private func shootGuidedMissileIfNeed() {
+        guard let recorder = audioRecorder?.recorder else { return }
+        callTime += displayLink?.duration ?? 0
+        recorder.updateMeters()
+        let normalizedValue = pow(10, recorder.averagePower(forChannel: 0) / 100)
+        if normalizedValue >= 0.5 && callTime >= shootGuidedMissileInterval {
+            callTime = 0
+            shootGuidedMissile()
+        }
+    }
+    
+    private func checkCollide() {
+        var removeTarget: TargetView?
+        var removeGuidedMissileArray: [GuidedMissileView] = []
+        var removeTargetArray: [TargetView] = []
+        //检测飞机是否碰撞靶子
+        for target in targetSet {
+            guard let layer = target.layer.presentation() else { continue }
+            if layer.frame.intersects(warplaneView.frame) {
+                healthPoint -= 1
+                removeTarget = target
+                break
+            }
+        }
+        if removeTarget != nil {
+            targetSet.remove(removeTarget!)
+            removeTarget?.removeFromSuperview()
+            removeTarget?.layer.removeAllAnimations()
+        }
+        //检测靶子是否碰撞导弹
+        guidedMissileSet.forEach {
+            guard let gmLayer = $0.layer.presentation() else { return }
+            let gm = $0
+            targetSet.forEach {
+                guard let targetLayer = $0.layer.presentation() else { return }
+                if gmLayer.frame.intersects(targetLayer.frame) {
+                    removeTargetArray.append($0)
+                    removeGuidedMissileArray.append(gm)
+                }
+            }
+        }
+        removeTargetArray.forEach {
+            targetSet.remove($0)
+            $0.removeFromSuperview()
+            $0.layer.removeAllAnimations()
+        }
+        removeGuidedMissileArray.forEach {
+            guidedMissileSet.remove($0)
+            $0.removeFromSuperview()
+            $0.layer.removeAllAnimations()
+        }
+    }
+    
+    private func checkGame() {
+        var hasTargetView = false
+        for view in view.subviews {
+            if view.isKind(of: TargetView.self) {
+                hasTargetView = true
+                break
+            }
+        }
+        if offsetIndex >= opponentCount && !hasTargetView {
+            stop()
+            showPassView()
+        } else if healthPoint <= 0 {
+            stop()
+            showFailedView()
+        }
+    }
+    
     //MARK: Action
     
     @objc
     private func pan(_ pan: UIPanGestureRecognizer) {
+        guard isPlay else {
+            return
+        }
         switch pan.state {
         case .began:
-            lastCenterX = flexibleView.center.x
+            lastCenter = warplaneView.center
+            break
         case .changed:
-            let offsetX = pan.translation(in: view).x
-            flexibleView.center.x = lastCenterX + offsetX
+            let offset = pan.translation(in: view)
+            let movedX = lastCenter.x + offset.x
+            var movedY = lastCenter.y + offset.y
+            if movedY <= Y_PADDING {
+                movedY = Y_PADDING
+            }
+            warplaneView.center = CGPoint(x: movedX, y: movedY)
+            break
         default:
             break
         }
     }
     
     @objc
-    private func setupRecorderLevel() {
-        guard !isStop else { return }
-        guard let recorder = audioRecorder?.recorder else { return }
-        recorder.updateMeters()
-        let normalizedValue = pow(10, recorder.averagePower(forChannel: 0) / 100)
-        let level = CGFloat(normalizedValue)
-        flexibleView.level = level
-        
-        var targetCount = 0
-        view.subviews.forEach {
-            if $0.isKind(of: TargetView.self) {
-                guard let layer = $0.layer.presentation() else { return }
-                let rect = CGRect(x: flexibleView.center.x - 30, y: flexibleView.y, width: 60, height: 60)
-                if layer.frame.intersects(rect) {
-                    playHitAudio()
-                    $0.removeFromSuperview()
-                } else {
-                    targetCount += 1
-                }
-            }
-        }
-        if offsetIndex == targets.count && targetCount == 0 {
-            stop()
-            showPassView()
-            audioRecorder?.stop({ (flah, url) in
-                
-            })
-            UIView.animate(withDuration: 0.5, animations: {
-                self.flexibleView.y = self.view.height - 110
-            }) { (flag) in
-                self.flexibleView.height = 110
-            }
-        }
+    private func handleTimerCall() {
+        //1.检查是否有碰撞
+        checkCollide()
+        //2.检查是否可以发射导弹
+        shootGuidedMissileIfNeed()
+        //3.检查是否游戏结束
+        checkGame()
     }
     
     //MARK: Getter
     
-    lazy var flexibleView: FlexibleAttackView = {
-        let view = FlexibleAttackView(frame: CGRect(x: 0, y: self.view.height - 110, width: 90, height: 110))
-        view.center.x = self.view.center.x
+    private lazy var warplaneView: UIImageView = {
+        let view = UIImageView(image: UIImage(named: WarplaneStyle.science.rawValue))
+        view.isUserInteractionEnabled = true
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+        view.addGestureRecognizer(pan)
         return view
     }()
     
+    private lazy var totalTargetPath: Int = {
+        return Int((view.width - X_PADDING * 2) / TARGET_SIZE)
+    }()
+    
+    private lazy var pathPointX: CGFloat = {
+        return (view.width - X_PADDING * 2) / CGFloat(totalTargetPath) / 2
+    }()
     
 }
 
+//MARK: CAAnimationDelegate
 extension LiveViewController: CAAnimationDelegate {
     
     public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        view.subviews.forEach {
-            if $0.isKind(of: TargetView.self) {
-                guard let layer = $0.layer.presentation() else {
-                    $0.removeFromSuperview()
-                    return
-                }
-                if layer.position.x >= view.width - 50 {
-                    stop()
-                    view.subviews.forEach {
-                        if $0.isKind(of: TargetView.self) {
-                            $0.removeFromSuperview()
-                        }
-                    }
-                    showFailedView()
-                }
-            }
+        let view = anim.value(forKey: "view")
+        if let view = view as? TargetView {
+            view.layer.removeAllAnimations()
+            view.removeFromSuperview()
+            targetSet.remove(view)
+        } else if let view = view as? GuidedMissileView {
+            view.layer.removeAllAnimations()
+            view.removeFromSuperview()
+            guidedMissileSet.remove(view)
         }
     }
     

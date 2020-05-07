@@ -25,11 +25,11 @@ public func playGame() {
 }
 
 public func setupTargets(_ targets: [String]) {
-    vc.targets = targets
+    
 }
 
 public func setupTargetTop(_ top: CGFloat) {
-    vc.targetTop = top
+    
 }
 
 public func setupShootTimeInterval(_ time: TimeInterval) {
