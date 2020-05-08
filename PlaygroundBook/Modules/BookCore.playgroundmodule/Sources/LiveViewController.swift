@@ -15,16 +15,16 @@ public enum HitSoundType {
     case bang
 }
 
-public enum FlyingSpeed: Double {
+public enum TargetFlyingSpeed: Double {
     case low = 10
     case medium = 8
     case high = 5
 }
 
 public enum GuidedMissileSpeed: Double {
-    case low = 7
-    case medium = 5
-    case high = 3
+    case low = 1.5
+    case medium = 1
+    case high = 0.5
 }
 
 public enum WarplaneStyle: String {
@@ -33,7 +33,7 @@ public enum WarplaneStyle: String {
 }
 
 let X_PADDING: CGFloat = 50
-let Y_PADDING: CGFloat = 100
+let Y_PADDING: CGFloat = 150
 let WARPLANE_SIZE: CGFloat = 90
 
 @objc(BookCore_LiveViewController)
@@ -47,13 +47,17 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     /// 对手数量
     public var opponentCount = 100
     
-    public var shootTimeInterval: TimeInterval = 0.5
+    public var shootTargetInterval: TimeInterval = 0.5
+    
+    public var shootGuidedMissileInterval: TimeInterval = 0.3
+    
+    public var target: String = "😈"
     
     /// 命名音效
     public var hitSoundType: HitSoundType = .puff
     
     /// target飞行速度
-    public var flyingSpeed: FlyingSpeed = .medium
+    public var flyingSpeed: TargetFlyingSpeed = .medium
     
     /// 飞机样式
     public var warplaneStyle: WarplaneStyle = .science
@@ -62,9 +66,11 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     public var guidedMissileSpeed: GuidedMissileSpeed = .medium
     
     /// 生命值
-    public var healthPoint = 5
-    
-    public var shootGuidedMissileInterval: TimeInterval = 0.5
+    public var healthValue = 5 {
+        willSet {
+            healthView.health = newValue
+        }
+    }
     
     /// 记录出现对手的个数
     private var offsetIndex = 0
@@ -81,16 +87,22 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     public override func viewDidLoad() {
         view.backgroundColor = .black
-        view.addSubview(warplaneView)
+        view.addSubview(backgroundView)
+        backgroundView.addSubview(healthView)
+        backgroundView.addSubview(waverView)
+        backgroundView.addSubview(warplaneView)
         
         warplaneView.frame = CGRect(x: 0, y: 0, width: WARPLANE_SIZE, height: WARPLANE_SIZE)
         warplaneView.center.x = view.width / 2
         warplaneView.center.y = view.height - WARPLANE_SIZE
         
+        healthView.health = healthValue
+        
         setupAudio()
         
         do {
             try audioRecorder = AudioRecorder()
+            waverView.recorder = audioRecorder?.recorder
         } catch {
             print(error)
         }
@@ -103,6 +115,12 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         showStartView()
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        backgroundView.frame = view.bounds
+        waverView.x = view.width - 15 - waverView.width
+    }
+    
     //MARK: Public
     
     public func play() {
@@ -112,7 +130,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         audioRecorder?.record()
         displayLink?.isPaused = false
         shootTarget(at: Int.randomIntNumber(lower: 0, upper: self.totalTargetPath))
-        timer = Timer(timeInterval: shootTimeInterval, repeats: true, block: { [unowned self] (t) in
+        timer = Timer(timeInterval: shootTargetInterval, repeats: true, block: { [unowned self] (t) in
             guard self.offsetIndex < self.opponentCount else {
                 return
             }
@@ -146,7 +164,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     private func shootTarget(at path: Int) {
         let targetView = TargetView(frame: CGRect(x: 0, y: -TARGET_SIZE, width: TARGET_SIZE, height: TARGET_SIZE))
-        targetView.label.text = "😈"
+        targetView.label.text = target
         targetView.center.x = X_PADDING + pathPointX * 2 * CGFloat(path - 1) + pathPointX
         view.addSubview(targetView)
         addTargetAnimation(targetView)
@@ -225,7 +243,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         callTime += displayLink?.duration ?? 0
         recorder.updateMeters()
         let normalizedValue = pow(10, recorder.averagePower(forChannel: 0) / 100)
-        if normalizedValue >= 0.5 && callTime >= shootGuidedMissileInterval {
+        if normalizedValue >= 0.6 && callTime >= shootGuidedMissileInterval {
             callTime = 0
             shootGuidedMissile()
         }
@@ -239,7 +257,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         for target in targetSet {
             guard let layer = target.layer.presentation() else { continue }
             if layer.frame.intersects(warplaneView.frame) {
-                healthPoint -= 1
+                healthValue -= 1
                 removeTarget = target
                 break
             }
@@ -284,7 +302,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         if offsetIndex >= opponentCount && !hasTargetView {
             stop()
             showPassView()
-        } else if healthPoint <= 0 {
+        } else if healthValue <= 0 {
             stop()
             showFailedView()
         }
@@ -332,6 +350,24 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         view.isUserInteractionEnabled = true
         let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
         view.addGestureRecognizer(pan)
+        return view
+    }()
+    
+    private lazy var backgroundView: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "background"))
+        view.contentMode = .scaleAspectFill
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
+    private lazy var healthView: HealthValueView = {
+        let view = HealthValueView(frame: CGRect(x: 15, y: 20, width: 300, height:40))
+        return view
+    }()
+    
+    private lazy var waverView: AudioWaverView = {
+        let view = AudioWaverView(frame: CGRect(x: 0, y: 20, width: 200, height: 40))
+        view.waveColor = UIColor.hex(0xFA3E54)
         return view
     }()
     

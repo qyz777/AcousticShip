@@ -33,7 +33,7 @@ public func setupTargetTop(_ top: CGFloat) {
 }
 
 public func setupShootTimeInterval(_ time: TimeInterval) {
-    vc.shootTimeInterval = time
+    vc.shootTargetInterval = time
 }
 
 public func setupHitSoundType(_ type: HitSoundType) {
