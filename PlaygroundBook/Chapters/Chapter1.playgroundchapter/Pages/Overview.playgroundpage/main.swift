@@ -21,7 +21,7 @@ As a member of the human alliance spacecraft patrol, you encountered a meteorite
 
 ## Game Instructions
 
-1. Every time the warplane launches a missile it needs to use sound to power it, make your sound to launch the missile.
+1. Every time the warplane launches a missile it needs to use sound to power it, make your sound to launch the missile. When you make a louder sound you can fire multiple missiles at once.
 
 2. The top left corner of the screen is the warplane's health, each time you hit a meteorite will be deducted 1 point, once the light your ship will crash in the meteorite belt!
 

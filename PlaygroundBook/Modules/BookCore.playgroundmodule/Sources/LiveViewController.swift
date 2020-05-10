@@ -38,7 +38,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     public var shootMeteoroliteInterval: TimeInterval = 0.5
     
-    public var shootGuidedMissileInterval: TimeInterval = 0.3
+    public var shootGuidedMissileInterval: TimeInterval = 0.5
     
     /// target飞行速度
     public var flyingSpeed: TargetFlyingSpeed = .medium
@@ -112,8 +112,8 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         }
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         stop()
         showStartView()
     }
@@ -168,8 +168,25 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         let guidedMissileView = GuidedMissileView(frame: CGRect(x: 0, y: 0, width: GUIDED_MISSILE_WIDTH, height: GUIDED_MISSILE_HEIGHT))
         guidedMissileView.center = CGPoint(x: warplaneView.center.x, y: warplaneView.y - GUIDED_MISSILE_HEIGHT / 2 - 5)
         view.addSubview(guidedMissileView)
-        addGuidedMissileAnimation(guidedMissileView)
+        let point = CGPoint(x: warplaneView.center.x, y: -GUIDED_MISSILE_HEIGHT / 2)
+        addGuidedMissileAnimation(guidedMissileView, to: point)
         guidedMissileSet.insert(guidedMissileView)
+    }
+    
+    private func shootMultipleGuidedMissile() {
+        let offset = CGFloat.pi / 6
+        let start = -CGFloat.pi / 6
+        for i in 0..<3 {
+            let guidedMissileView = GuidedMissileView(frame: CGRect(x: 0, y: 0, width: GUIDED_MISSILE_WIDTH, height: GUIDED_MISSILE_HEIGHT))
+            guidedMissileView.center = CGPoint(x: warplaneView.center.x, y: warplaneView.y - GUIDED_MISSILE_HEIGHT / 2 - 5)
+            view.addSubview(guidedMissileView)
+            let angle = start + offset * CGFloat(i)
+            guidedMissileView.transform = .init(rotationAngle: angle)
+            let width = CGFloat(tanf(Float(angle))) * (warplaneView.y - 5)
+            let point = CGPoint(x: guidedMissileView.center.x + width, y: -GUIDED_MISSILE_HEIGHT / 2)
+            addGuidedMissileAnimation(guidedMissileView, to: point)
+            guidedMissileSet.insert(guidedMissileView)
+        }
     }
     
     private func addTargetAnimation(_ view: UIView) {
@@ -186,10 +203,10 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         view.layer.add(animation, forKey: "target_animation")
     }
     
-    private func addGuidedMissileAnimation(_ view: UIView) {
+    private func addGuidedMissileAnimation(_ view: UIView, to point: CGPoint) {
         let animation = CABasicAnimation(keyPath: "position")
         animation.fromValue = NSValue(cgPoint: view.layer.position)
-        animation.toValue = NSValue(cgPoint: CGPoint(x: view.layer.position.x, y: -GUIDED_MISSILE_HEIGHT / 2))
+        animation.toValue = NSValue(cgPoint: point)
         animation.duration = guidedMissileSpeed.rawValue
         animation.autoreverses = false
         animation.beginTime = CACurrentMediaTime()
@@ -227,9 +244,14 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         callTime += displayLink?.duration ?? 0
         recorder.updateMeters()
         let normalizedValue = pow(10, recorder.averagePower(forChannel: 0) / 100)
-        if normalizedValue >= 0.5 && callTime >= shootGuidedMissileInterval {
-            callTime = 0
-            shootGuidedMissile()
+        if callTime >= shootGuidedMissileInterval {
+            if normalizedValue >= 0.8 {
+                shootMultipleGuidedMissile()
+                callTime = 0
+            } else if normalizedValue >= 0.5 {
+                shootGuidedMissile()
+                callTime = 0
+            }
         }
     }
     
