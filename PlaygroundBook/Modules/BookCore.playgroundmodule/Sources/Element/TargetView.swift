@@ -7,24 +7,26 @@
 
 import UIKit
 
-let TARGET_SIZE: CGFloat = UIFont.systemFont(ofSize: 50).pointSize + 5
+let TARGET_SIZE: CGFloat = 50
 
 class TargetView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(label)
-        label.frame = bounds
+        addSubview(imageView)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
-    lazy var label: UILabel = {
-        let view = UILabel()
-        view.font = .systemFont(ofSize: 50)
-        view.text = "😈"
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageView.frame = bounds
+    }
+    
+    lazy var imageView: UIImageView = {
+        let view = UIImageView()
         return view
     }()
 

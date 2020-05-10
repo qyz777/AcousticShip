@@ -22,25 +22,28 @@ class FailedView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        leftLabel.x = 0
-        leftLabel.y = 0
-        rightLabel.x = width - rightLabel.width
-        rightLabel.y = 0
-        centerLabel.center = CGPoint(x: 200, y: 100)
+        centerLabel.sizeToFit()
+        centerLabel.center = CGPoint(x: width / 2.0, y: height / 2.0)
+        leftLabel.sizeToFit()
+        leftLabel.x = centerLabel.x - leftLabel.width - 5
+        leftLabel.center.y = centerLabel.center.y
+        rightLabel.sizeToFit()
+        rightLabel.x = centerLabel.frame.maxX + 5
+        rightLabel.center.y = centerLabel.center.y
     }
     
     private lazy var leftLabel: UILabel = {
         let view = UILabel()
-        view.text = "😫  😤"
-        view.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        view.text = "😤"
+        view.font = UIFont.systemFont(ofSize: 100, weight: .bold)
         view.sizeToFit()
         return view
     }()
     
     private lazy var rightLabel: UILabel = {
         let view = UILabel()
-        view.text = "😫  😤"
-        view.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        view.text = "😤"
+        view.font = UIFont.systemFont(ofSize: 100, weight: .bold)
         view.sizeToFit()
         view.transform = .init(scaleX: -1, y: 1)
         return view

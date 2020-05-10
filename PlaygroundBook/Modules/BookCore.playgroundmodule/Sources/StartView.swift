@@ -16,6 +16,7 @@ class StartView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(startButton)
+        addSubview(infoLabel)
         addSubview(numberLabel)
     }
     
@@ -25,13 +26,18 @@ class StartView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        startButton.center = CGPoint(x: 100, y: 100)
-        numberLabel.center = CGPoint(x: 100, y: 100)
+        startButton.sizeToFit()
+        startButton.center = CGPoint(x: width / 2.0, y: height / 2.0)
+        numberLabel.center = CGPoint(x: width / 2.0, y: height / 2.0)
+        infoLabel.sizeToFit()
+        infoLabel.y = startButton.frame.maxY
+        infoLabel.center.x = startButton.center.x
     }
     
     @objc
     func start() {
         startButton.isHidden = true
+        infoLabel.isHidden = true
         numberLabel.isHidden = false
         var index = 2
         timer = Timer(timeInterval: 1, repeats: true, block: { [unowned self] (t) in
@@ -49,11 +55,19 @@ class StartView: UIView {
     
     private lazy var startButton: UIButton = {
         let view = UIButton(type: .custom)
-        view.frame = CGRect(x: 0, y: 0, width: 200, height: 60)
         view.setTitle("Start", for: .normal)
         view.setTitleColor(.white, for: .normal)
         view.titleLabel?.font = UIFont.systemFont(ofSize: 60, weight: .semibold)
         view.addTarget(self, action: #selector(start), for: .touchUpInside)
+        return view
+    }()
+    
+    private lazy var infoLabel: UILabel = {
+        let view = UILabel()
+        view.text = "Tap to start!"
+        view.textColor = .white
+        view.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        view.textAlignment = .center
         return view
     }()
     

@@ -16,9 +16,9 @@ public enum HitSoundType {
 }
 
 public enum TargetFlyingSpeed: Double {
-    case low = 10
-    case medium = 8
-    case high = 5
+    case low = 8
+    case medium = 5
+    case high = 3
 }
 
 public enum GuidedMissileSpeed: Double {
@@ -44,14 +44,12 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     private var lastCenter: CGPoint = .zero
     private var timer: Timer?
     
-    /// 对手数量
-    public var opponentCount = 100
+    /// 陨石数量
+    public var stoneCount = 1
     
     public var shootTargetInterval: TimeInterval = 0.5
     
     public var shootGuidedMissileInterval: TimeInterval = 0.3
-    
-    public var target: String = "😈"
     
     /// 命名音效
     public var hitSoundType: HitSoundType = .puff
@@ -85,16 +83,14 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     private var callTime: TimeInterval = 0
     
+    private var startView: StartView?
+    
     public override func viewDidLoad() {
         view.backgroundColor = .black
         view.addSubview(backgroundView)
         backgroundView.addSubview(healthView)
         backgroundView.addSubview(waverView)
         backgroundView.addSubview(warplaneView)
-        
-        warplaneView.frame = CGRect(x: 0, y: 0, width: WARPLANE_SIZE, height: WARPLANE_SIZE)
-        warplaneView.center.x = view.width / 2
-        warplaneView.center.y = view.height - WARPLANE_SIZE
         
         healthView.health = healthValue
         
@@ -119,19 +115,24 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         super.viewDidLayoutSubviews()
         backgroundView.frame = view.bounds
         waverView.x = view.width - 15 - waverView.width
+        startView?.center = CGPoint(x: view.width / 2.0, y: view.height / 2.0)
+        if !isPlay {
+            warplaneView.center.x = view.width / 2
+            warplaneView.center.y = view.height - WARPLANE_SIZE
+        }
     }
     
     //MARK: Public
     
     public func play() {
-        guard opponentCount > 0 else {
+        guard stoneCount > 0 else {
             return
         }
         audioRecorder?.record()
         displayLink?.isPaused = false
         shootTarget(at: Int.randomIntNumber(lower: 0, upper: self.totalTargetPath))
         timer = Timer(timeInterval: shootTargetInterval, repeats: true, block: { [unowned self] (t) in
-            guard self.offsetIndex < self.opponentCount else {
+            guard self.offsetIndex < self.stoneCount else {
                 return
             }
             
@@ -164,7 +165,12 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     private func shootTarget(at path: Int) {
         let targetView = TargetView(frame: CGRect(x: 0, y: -TARGET_SIZE, width: TARGET_SIZE, height: TARGET_SIZE))
-        targetView.label.text = target
+        let v = Int.randomIntNumber(lower: 0, upper: 2)
+        if v == 0 {
+            targetView.imageView.image = UIImage(named: "rock_1")
+        } else {
+            targetView.imageView.image = UIImage(named: "rock_2")
+        }
         targetView.center.x = X_PADDING + pathPointX * 2 * CGFloat(path - 1) + pathPointX
         view.addSubview(targetView)
         addTargetAnimation(targetView)
@@ -209,12 +215,12 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     }
     
     private func showStartView() {
-        let startView = StartView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
-        startView.completeClosure = { [unowned self] in
+        startView = StartView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        startView!.completeClosure = { [unowned self] in
             self.play()
         }
-        startView.center = view.center
-        view.addSubview(startView)
+        startView!.center = view.center
+        view.addSubview(startView!)
     }
     
     private func showPassView() {
@@ -299,7 +305,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
                 break
             }
         }
-        if offsetIndex >= opponentCount && !hasTargetView {
+        if offsetIndex >= stoneCount && !hasTargetView {
             stop()
             showPassView()
         } else if healthValue <= 0 {
@@ -347,6 +353,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     private lazy var warplaneView: UIImageView = {
         let view = UIImageView(image: UIImage(named: WarplaneStyle.science.rawValue))
+        view.frame = CGRect(x: 0, y: 0, width: WARPLANE_SIZE, height: WARPLANE_SIZE)
         view.isUserInteractionEnabled = true
         let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
         view.addGestureRecognizer(pan)
@@ -368,6 +375,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     private lazy var waverView: AudioWaverView = {
         let view = AudioWaverView(frame: CGRect(x: 0, y: 20, width: 200, height: 40))
         view.waveColor = UIColor.hex(0xFA3E54)
+        view.numberOfWaves = 5
         return view
     }()
     
