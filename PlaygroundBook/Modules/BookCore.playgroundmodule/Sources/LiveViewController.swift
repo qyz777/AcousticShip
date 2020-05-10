@@ -8,12 +8,6 @@
 
 import UIKit
 import PlaygroundSupport
-import AudioToolbox
-
-public enum HitSoundType {
-    case puff
-    case bang
-}
 
 public enum TargetFlyingSpeed: Double {
     case low = 8
@@ -25,11 +19,6 @@ public enum GuidedMissileSpeed: Double {
     case low = 1.5
     case medium = 1
     case high = 0.5
-}
-
-public enum WarplaneStyle: String {
-    case science = "warplane_1"
-    case modern = "warplane_2"
 }
 
 let X_PADDING: CGFloat = 50
@@ -45,20 +34,23 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     private var timer: Timer?
     
     /// 陨石数量
-    public var stoneCount = 1
+    public var meteoroliteCount = 100
     
-    public var shootTargetInterval: TimeInterval = 0.5
+    public var shootMeteoroliteInterval: TimeInterval = 0.5
     
     public var shootGuidedMissileInterval: TimeInterval = 0.3
-    
-    /// 命名音效
-    public var hitSoundType: HitSoundType = .puff
     
     /// target飞行速度
     public var flyingSpeed: TargetFlyingSpeed = .medium
     
     /// 飞机样式
-    public var warplaneStyle: WarplaneStyle = .science
+    public var warplaneStyle: String = "warplane_1" {
+        willSet {
+            warplaneView.warplaneStyle = newValue
+        }
+    }
+    
+    public var meteoroliteStyle: String = "rock_1"
     
     /// 导弹速度
     public var guidedMissileSpeed: GuidedMissileSpeed = .medium
@@ -70,11 +62,12 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         }
     }
     
+    public var shootMeteoroliteClosure: ((_ screenWidth: CGFloat, _ meteoroliteSize: CGFloat) -> CGFloat)?
+    
+    public var appearMeteoroliteStyleClosure: ((_ index: Int) -> String)?
+    
     /// 记录出现对手的个数
     private var offsetIndex = 0
-    
-    private var audio1: SystemSoundID = 0
-    private var audio2: SystemSoundID = 0
     
     private var isPlay = false
     
@@ -94,8 +87,6 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         
         healthView.health = healthValue
         
-        setupAudio()
-        
         do {
             try audioRecorder = AudioRecorder()
             waverView.recorder = audioRecorder?.recorder
@@ -107,8 +98,6 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         displayLink = CADisplayLink(target: self, selector: #selector(handleTimerCall))
         displayLink?.isPaused = true
         displayLink?.add(to: RunLoop.current, forMode: .common)
-        
-        showStartView()
     }
     
     public override func viewDidLayoutSubviews() {
@@ -116,27 +105,34 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         backgroundView.frame = view.bounds
         waverView.x = view.width - 15 - waverView.width
         startView?.center = CGPoint(x: view.width / 2.0, y: view.height / 2.0)
+        healthView.width = view.width - waverView.width - 50
         if !isPlay {
             warplaneView.center.x = view.width / 2
             warplaneView.center.y = view.height - WARPLANE_SIZE
         }
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        stop()
+        showStartView()
+    }
+    
     //MARK: Public
     
     public func play() {
-        guard stoneCount > 0 else {
+        guard meteoroliteCount > 0 else {
             return
         }
         audioRecorder?.record()
         displayLink?.isPaused = false
-        shootTarget(at: Int.randomIntNumber(lower: 0, upper: self.totalTargetPath))
-        timer = Timer(timeInterval: shootTargetInterval, repeats: true, block: { [unowned self] (t) in
-            guard self.offsetIndex < self.stoneCount else {
+        shootMeteorolite(at: shootMeteoroliteCenterX())
+        timer = Timer(timeInterval: shootMeteoroliteInterval, repeats: true, block: { [unowned self] (t) in
+            guard self.offsetIndex < self.meteoroliteCount else {
                 return
             }
             
-            self.shootTarget(at: Int.randomIntNumber(lower: 1, upper: self.totalTargetPath + 1))
+            self.shootMeteorolite(at: self.shootMeteoroliteCenterX())
         })
         RunLoop.current.add(timer!, forMode: .common)
         isPlay = true
@@ -154,24 +150,14 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         isPlay = false
     }
     
-    private func setupAudio() {
-        let path1 = Bundle.main.path(forResource: "audio1", ofType: "mp3")
-        let url1 = NSURL(fileURLWithPath: path1 ?? "")
-        AudioServicesCreateSystemSoundID(url1, &audio1)
-        let path2 = Bundle.main.path(forResource: "audio2", ofType: "mp3")
-        let url2 = NSURL(fileURLWithPath: path2 ?? "")
-        AudioServicesCreateSystemSoundID(url2, &audio2)
-    }
-    
-    private func shootTarget(at path: Int) {
+    private func shootMeteorolite(at centerX: CGFloat) {
         let targetView = TargetView(frame: CGRect(x: 0, y: -TARGET_SIZE, width: TARGET_SIZE, height: TARGET_SIZE))
-        let v = Int.randomIntNumber(lower: 0, upper: 2)
-        if v == 0 {
-            targetView.imageView.image = UIImage(named: "rock_1")
+        if appearMeteoroliteStyleClosure != nil {
+            targetView.imageView.image = UIImage(named: appearMeteoroliteStyleClosure!(offsetIndex))
         } else {
-            targetView.imageView.image = UIImage(named: "rock_2")
+            targetView.imageView.image = UIImage(named: meteoroliteStyle)
         }
-        targetView.center.x = X_PADDING + pathPointX * 2 * CGFloat(path - 1) + pathPointX
+        targetView.center.x = centerX
         view.addSubview(targetView)
         addTargetAnimation(targetView)
         offsetIndex += 1
@@ -230,18 +216,10 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     }
     
     private func showFailedView() {
-        let failedView = FailedView(frame: CGRect(x: 0, y: 0, width: 400, height: 200))
+        let failedView = FailedView(frame: CGRect(x: 0, y: 0, width: view.width, height: 200))
         failedView.center = view.center
         view.addSubview(failedView)
-    }
-    
-    private func playHitAudio() {
-        switch hitSoundType {
-        case .puff:
-            AudioServicesPlaySystemSound(audio1)
-        case .bang:
-            AudioServicesPlaySystemSound(audio2)
-        }
+        removeAllMeteorolite()
     }
     
     private func shootGuidedMissileIfNeed() {
@@ -249,7 +227,7 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
         callTime += displayLink?.duration ?? 0
         recorder.updateMeters()
         let normalizedValue = pow(10, recorder.averagePower(forChannel: 0) / 100)
-        if normalizedValue >= 0.6 && callTime >= shootGuidedMissileInterval {
+        if normalizedValue >= 0.5 && callTime >= shootGuidedMissileInterval {
             callTime = 0
             shootGuidedMissile()
         }
@@ -305,12 +283,28 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
                 break
             }
         }
-        if offsetIndex >= stoneCount && !hasTargetView {
+        if offsetIndex >= meteoroliteCount && !hasTargetView {
             stop()
             showPassView()
         } else if healthValue <= 0 {
             stop()
             showFailedView()
+        }
+    }
+    
+    private func shootMeteoroliteCenterX() -> CGFloat {
+        if shootMeteoroliteClosure != nil {
+            return shootMeteoroliteClosure!(view.width, TARGET_SIZE)
+        }
+        let path = Int.randomIntNumber(lower: 1, upper: self.totalTargetPath + 1)
+        return X_PADDING + pathPointX * 2 * CGFloat(path - 1) + pathPointX
+    }
+    
+    private func removeAllMeteorolite() {
+        view.subviews.forEach {
+            if $0.isKind(of: TargetView.self) {
+                $0.removeFromSuperview()
+            }
         }
     }
     
@@ -351,10 +345,9 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
     
     //MARK: Getter
     
-    private lazy var warplaneView: UIImageView = {
-        let view = UIImageView(image: UIImage(named: WarplaneStyle.science.rawValue))
+    private lazy var warplaneView: WarplaneView = {
+        let view = WarplaneView()
         view.frame = CGRect(x: 0, y: 0, width: WARPLANE_SIZE, height: WARPLANE_SIZE)
-        view.isUserInteractionEnabled = true
         let pan = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
         view.addGestureRecognizer(pan)
         return view

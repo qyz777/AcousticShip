@@ -1,10 +1,23 @@
 //
-//  See LICENSE folder for this template’s licensing information.
+//  Copyright © 2020 YiZhong Qi. All rights reserved.
 //
-//  Abstract:
-//  An empty, user-editable source file. Part of the "UserModule" user module.
+//  Shared codes
+//  The code written in this file is available on all pages of this Playground.
 //
 
-public func test() {
-    
+import BookAPI
+
+public func configureGame() {
+    //Set the time interval for each meteorolite
+    setupAppearStoneInterval(0.5)
+    //Set the time interval for each missile launch
+    setupShootGuidedMissileInterval(0.3)
+    //Set the appearance of the warplane, science or modern
+    setupWarplaneStyle(WarplaneStyle.science)
+    //Set warplane health, it has to be greater than 0 and less than 10
+    setupHealthValue(5)
+    //Set the difficulty of the game
+    setupGameLevel(GameLevel.normal)
+    //Set the number of meteorites in the game. Changing the difficulty of the game will also change the number of meteorites
+    //setupStoneCount(100)
 }

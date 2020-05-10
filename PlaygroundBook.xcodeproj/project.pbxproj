@@ -27,6 +27,7 @@
 		A0487FF224658C3A0025D7D6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0487FF124658C3A0025D7D6 /* UIImageExtension.swift */; };
 		A0487FF424658EF40025D7D6 /* HealthValueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0487FF324658EF40025D7D6 /* HealthValueView.swift */; };
 		A0487FF6246593D30025D7D6 /* AudioWaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0487FF5246593D30025D7D6 /* AudioWaverView.swift */; };
+		A0487FF82467ED370025D7D6 /* WarplaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0487FF72467ED370025D7D6 /* WarplaneView.swift */; };
 		A0D3872B246312F900C6D617 /* FailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38727246312F800C6D617 /* FailedView.swift */; };
 		A0D3872C246312F900C6D617 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D38728246312F800C6D617 /* AudioRecorder.swift */; };
 		A0D387322463130000C6D617 /* TargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D3872F246312FF00C6D617 /* TargetView.swift */; };
@@ -178,6 +179,7 @@
 		A0487FF124658C3A0025D7D6 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		A0487FF324658EF40025D7D6 /* HealthValueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthValueView.swift; sourceTree = "<group>"; };
 		A0487FF5246593D30025D7D6 /* AudioWaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioWaverView.swift; sourceTree = "<group>"; };
+		A0487FF72467ED370025D7D6 /* WarplaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarplaneView.swift; sourceTree = "<group>"; };
 		A0D38727246312F800C6D617 /* FailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedView.swift; sourceTree = "<group>"; };
 		A0D38728246312F800C6D617 /* AudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		A0D3872F246312FF00C6D617 /* TargetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetView.swift; sourceTree = "<group>"; };
@@ -444,6 +446,7 @@
 			children = (
 				A0D3872F246312FF00C6D617 /* TargetView.swift */,
 				A0D3874124644C2500C6D617 /* GuidedMissileView.swift */,
+				A0487FF72467ED370025D7D6 /* WarplaneView.swift */,
 			);
 			path = Element;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 			files = (
 				A0487FF424658EF40025D7D6 /* HealthValueView.swift in Sources */,
 				5E3196F32061DEA40077BBD7 /* LiveViewSupport.swift in Sources */,
+				A0487FF82467ED370025D7D6 /* WarplaneView.swift in Sources */,
 				A0D387392463CE9A00C6D617 /* StringExtension.swift in Sources */,
 				A0D3872B246312F900C6D617 /* FailedView.swift in Sources */,
 				A0D387332463130000C6D617 /* StartView.swift in Sources */,

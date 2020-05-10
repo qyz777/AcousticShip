@@ -17,25 +17,83 @@ import PlaygroundSupport
 // This is controlled via the book-level `UserAutoImportedAuxiliaryModules`
 // Manifest.plist key.
 
+public enum WarplaneStyle: String {
+    case science = "warplane_1"
+    case modern = "warplane_2"
+}
+
+public enum MeteoroliteStyle: String {
+    case yellow = "rock_1"
+    case grey = "rock_2"
+}
+
 let vc = LiveViewController()
 
+public class Game {
+    
+    public var setupMeteorolite: ((_ screenWidth: CGFloat, _ meteoroliteSize: CGFloat) -> CGFloat)? {
+        willSet {
+            vc.shootMeteoroliteClosure = newValue
+        }
+    }
+    
+    public var setupMeteoroliteStyle: ((_ index: Int) -> MeteoroliteStyle)? {
+        willSet {
+            guard let closure = newValue else { return }
+            vc.appearMeteoroliteStyleClosure = { (index) in
+                return closure(index).rawValue
+            }
+        }
+    }
+    
+}
+
+public let game = Game()
+
+public enum GameLevel {
+    case easy
+    case normal
+    case hard
+}
+
 public func playGame() {
-    vc.play()
     PlaygroundPage.current.liveView = vc
+    vc.play()
 }
 
-public func setupTargets(_ targets: [String]) {
-    
+public func setupAppearStoneInterval(_ interval: TimeInterval) {
+    vc.shootMeteoroliteInterval = max(interval, 0)
 }
 
-public func setupTargetTop(_ top: CGFloat) {
-    
+public func setupShootGuidedMissileInterval(_ interval: TimeInterval) {
+    vc.shootGuidedMissileInterval = max(interval, 0.1)
 }
 
-public func setupShootTimeInterval(_ time: TimeInterval) {
-    vc.shootTargetInterval = time
+public func setupStoneCount(_ count: Int) {
+    vc.meteoroliteCount = count
 }
 
-public func setupHitSoundType(_ type: HitSoundType) {
-    vc.hitSoundType = type
+public func setupGameLevel(_ level: GameLevel) {
+    switch level {
+    case .easy:
+        vc.meteoroliteCount = 100
+        vc.flyingSpeed = .low
+        vc.guidedMissileSpeed = .low
+    case .normal:
+        vc.meteoroliteCount = 300
+        vc.flyingSpeed = .medium
+        vc.guidedMissileSpeed = .medium
+    case .hard:
+        vc.meteoroliteCount = 500
+        vc.flyingSpeed = .high
+        vc.guidedMissileSpeed = .high
+    }
+}
+
+public func setupWarplaneStyle(_ style: WarplaneStyle) {
+    vc.warplaneStyle = style.rawValue
+}
+
+public func setupHealthValue(_ value: Int) {
+    vc.healthValue = min(max(value, 1), 10)
 }
