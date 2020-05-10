@@ -267,6 +267,20 @@ public class LiveViewController: UIViewController, PlaygroundLiveViewMessageHand
             targetSet.remove($0)
             $0.removeFromSuperview()
             $0.layer.removeAllAnimations()
+            
+            guard let layer = $0.layer.presentation() else { return }
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 100)
+            label.text = "💥"
+            label.sizeToFit()
+            label.center = layer.position
+            label.transform = .init(scaleX: 0.1, y: 0.1)
+            backgroundView.addSubview(label)
+            UIView.animate(withDuration: 0.25, animations: {
+                label.transform = .identity
+            }) { (_) in
+                label.removeFromSuperview()
+            }
         }
         removeGuidedMissileArray.forEach {
             guidedMissileSet.remove($0)
