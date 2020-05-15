@@ -23,10 +23,16 @@ import UIKit
 
 func setupMeteorolite(_ screenWidth: CGFloat, _ meteoroliteSize: CGFloat) -> CGFloat {
     //Try to return a different x-coordinate
+    
+    //The inner margin of the meteorite as it appears on the screen
     let padding: CGFloat = 50
+    //Calculate the number of tracks the meteorite appears in
     let totalMeteorolitePath = Int((screenWidth - padding * 2) / meteoroliteSize)
+    //Calculate the relative coordinates of the track center x
     let pathPointX = (screenWidth - padding * 2) / CGFloat(totalMeteorolitePath) / 2
+    //Randomly assign a value between 1 and the number of tracks
     let path = randomIntNumber(lower: 1, upper: totalMeteorolitePath + 1)
+    //Returns the coordinates of the x center where the meteorite appeared
     return padding + pathPointX * 2 * CGFloat(path - 1) + pathPointX
 }
 
