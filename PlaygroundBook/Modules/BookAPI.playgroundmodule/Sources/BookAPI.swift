@@ -58,7 +58,6 @@ public enum GameLevel {
 
 public func playGame() {
     PlaygroundPage.current.liveView = vc
-    vc.play()
 }
 
 public func setupAppearStoneInterval(_ interval: TimeInterval) {
